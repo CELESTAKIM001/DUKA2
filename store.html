@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Duka — Premium Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:        #0a0a0f;
+      --surface:   #13131a;
+      --card:      #1a1a25;
+      --border:    #2a2a3a;
+      --accent:    #00c853;
+      --accent2:   #ffd600;
+      --text:      #f0f0f5;
+      --muted:     #8888aa;
+      --danger:    #ff3d57;
+      --radius:    14px;
+      --shadow:    0 8px 40px rgba(0,0,0,0.5);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+    }
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem; font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links a {
+      color: var(--muted); text-decoration: none; font-size: .875rem;
+      font-weight: 500; margin-left: 2rem; transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      padding: 6rem 2rem 4rem;
+      text-align: center;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,200,83,.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+    }
+    .hero h1 em { color: var(--accent); font-style: normal; }
+    .hero p {
+      margin-top: 1rem; color: var(--muted); font-size: 1.1rem;
+      max-width: 480px; margin-inline: auto;
+    }
+    .badge-mpesa {
+      display: inline-flex; align-items: center; gap: .5rem;
+      margin-top: 1.5rem;
+      background: rgba(0,200,83,.1); border: 1px solid rgba(0,200,83,.3);
+      border-radius: 999px; padding: .4rem 1.1rem;
+      font-size: .8rem; font-weight: 600; color: var(--accent);
+      letter-spacing: .05em; text-transform: uppercase;
+    }
+    .badge-mpesa::before {
+      content: ''; width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent); animation: pulse 1.8s infinite;
+    }
+    @keyframes pulse {
+      0%,100%{ opacity:1; transform:scale(1); }
+      50%{ opacity:.4; transform:scale(1.4); }
+    }
+
+    /* ── GRID ── */
+    .grid-wrap {
+      max-width: 1200px; margin: 0 auto; padding: 2rem;
+    }
+    .section-label {
+      font-size: .7rem; font-weight: 600; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* ── CARD ── */
+    .product-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: transform .25s, border-color .25s, box-shadow .25s;
+      position: relative;
+    }
+    .product-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(0,200,83,.4);
+      box-shadow: var(--shadow), 0 0 0 1px rgba(0,200,83,.2);
+    }
+    .card-img {
+      width: 100%; aspect-ratio: 4/3; object-fit: cover;
+      background: var(--surface);
+      display: block;
+    }
+    .card-img-placeholder {
+      width: 100%; aspect-ratio: 4/3;
+      background: linear-gradient(135deg, var(--surface), var(--border));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem;
+    }
+    .card-body { padding: 1.25rem; }
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem; font-weight: 600;
+      line-height: 1.3; margin-bottom: .4rem;
+    }
+    .card-desc { color: var(--muted); font-size: .82rem; line-height: 1.5; margin-bottom: 1rem; }
+    .price-row { display: flex; align-items: baseline; gap: .6rem; margin-bottom: 1.1rem; }
+    .price-before {
+      color: var(--muted); font-size: .85rem;
+      text-decoration: line-through; text-decoration-color: var(--danger);
+    }
+    .price-after {
+      font-size: 1.35rem; font-weight: 700; color: var(--accent);
+    }
+    .savings-tag {
+      font-size: .7rem; font-weight: 600;
+      background: rgba(255,214,0,.12); color: var(--accent2);
+      border: 1px solid rgba(255,214,0,.3);
+      border-radius: 999px; padding: .15rem .55rem;
+    }
+    .btn-buy {
+      width: 100%; padding: .75rem; border: none;
+      background: var(--accent); color: #000; font-family: 'DM Sans', sans-serif;
+      font-size: .9rem; font-weight: 700; border-radius: 8px;
+      cursor: pointer; transition: background .2s, transform .15s;
+      letter-spacing: .01em;
+    }
+    .btn-buy:hover { background: #00e060; transform: scale(1.02); }
+    .btn-buy:active { transform: scale(.98); }
+
+    /* ── EMPTY STATE ── */
+    .empty {
+      text-align: center; padding: 5rem 2rem;
+      color: var(--muted);
+    }
+    .empty .emoji { font-size: 4rem; display: block; margin-bottom: 1rem; }
+
+    /* ── MODAL OVERLAY ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 9000;
+      background: rgba(0,0,0,.75); backdrop-filter: blur(6px);
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 20px; padding: 2.5rem 2rem;
+      width: min(92vw, 400px); text-align: center;
+      animation: slideUp .3s ease;
+    }
+    @keyframes slideUp {
+      from { opacity:0; transform:translateY(20px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+    .modal-spinner {
+      width: 52px; height: 52px; border-radius: 50%;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1.5rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .modal-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: .5rem; }
+    .modal-sub { color: var(--muted); font-size: .875rem; line-height: 1.5; }
+    .modal-close {
+      margin-top: 1.5rem; background: none; border: 1px solid var(--border);
+      color: var(--muted); padding: .5rem 1.5rem; border-radius: 8px;
+      cursor: pointer; font-size: .85rem; font-family: 'DM Sans', sans-serif;
+      transition: border-color .2s, color .2s;
+    }
+    .modal-close:hover { border-color: var(--muted); color: var(--text); }
+
+    /* ── SUCCESS STATE ── */
+    .success-icon { font-size: 3.5rem; margin-bottom: 1rem; display: block; }
+    .receipt-code {
+      display: inline-block; margin-top: .75rem;
+      background: rgba(0,200,83,.1); border: 1px solid rgba(0,200,83,.3);
+      border-radius: 8px; padding: .5rem 1.2rem;
+      font-family: monospace; font-size: 1.1rem; color: var(--accent);
+      letter-spacing: .05em;
+    }
+
+    /* ── PHONE MODAL FORM ── */
+    .phone-form { margin-top: 1.5rem; text-align: left; }
+    .phone-form label { font-size: .8rem; font-weight: 600; color: var(--muted); display: block; margin-bottom: .4rem; }
+    .phone-form input {
+      width: 100%; padding: .75rem 1rem;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text);
+      font-family: 'DM Sans', sans-serif; font-size: 1rem;
+      outline: none; transition: border-color .2s;
+    }
+    .phone-form input:focus { border-color: var(--accent); }
+    .phone-form input::placeholder { color: var(--muted); }
+    .btn-pay {
+      width: 100%; margin-top: 1rem; padding: .8rem;
+      background: var(--accent); border: none; border-radius: 8px;
+      color: #000; font-family: 'DM Sans', sans-serif;
+      font-size: .95rem; font-weight: 700; cursor: pointer;
+      transition: background .2s;
+    }
+    .btn-pay:hover { background: #00e060; }
+    .btn-pay:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
+    .form-error { color: var(--danger); font-size: .8rem; margin-top: .5rem; display: none; }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center; padding: 2rem;
+      color: var(--muted); font-size: .78rem; border-top: 1px solid var(--border);
+      margin-top: 4rem;
+    }
+
+    @media (max-width:600px) {
+      nav { padding: 0 1rem; }
+      .hero { padding: 4rem 1rem 2.5rem; }
+      .grid-wrap { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Duka<span>.</span></div>
+  <div class="nav-links">
+    <a href="/admin">Admin ↗</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>Shop Smarter,<br>Pay with <em>M-Pesa</em></h1>
+  <p>Seamless Lipa Na M-Pesa checkout — tap, PIN, done.</p>
+  <div class="badge-mpesa">Daraja STK Push &nbsp;·&nbsp; Live Payments</div>
+</section>
+
+<!-- PRODUCTS -->
+<main class="grid-wrap">
+  <p class="section-label">— Featured Products</p>
+
+  {% if products %}
+  <div class="products-grid">
+    {% for p in products %}
+    <article class="product-card">
+      {% if p.imageUrl %}
+        <img class="card-img" src="{{ p.imageUrl }}" alt="{{ p.title }}" loading="lazy"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"/>
+        <div class="card-img-placeholder" style="display:none">🛒</div>
+      {% else %}
+        <div class="card-img-placeholder">🛒</div>
+      {% endif %}
+      <div class="card-body">
+        <h2 class="card-title">{{ p.title }}</h2>
+        <p class="card-desc">{{ p.description }}</p>
+        <div class="price-row">
+          {% if p.priceBefore and p.priceBefore > p.priceAfter %}
+            <span class="price-before">KES {{ "{:,.0f}".format(p.priceBefore) }}</span>
+          {% endif %}
+          <span class="price-after">KES {{ "{:,.0f}".format(p.priceAfter) }}</span>
+          {% if p.priceBefore and p.priceBefore > p.priceAfter %}
+            <span class="savings-tag">
+              SAVE {{ "{:.0f}".format(((p.priceBefore - p.priceAfter) / p.priceBefore) * 100) }}%
+            </span>
+          {% endif %}
+        </div>
+        <button class="btn-buy"
+                onclick='openCheckout("{{ p._id }}", "{{ p.title | e }}", {{ p.priceAfter }})'>
+          Buy Now — KES {{ "{:,.0f}".format(p.priceAfter) }}
+        </button>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty">
+    <span class="emoji">🏪</span>
+    <h2>No products yet</h2>
+    <p>Visit the <a href="/admin" style="color:var(--accent)">Admin panel</a> to add your first product.</p>
+  </div>
+  {% endif %}
+</main>
+
+<footer>© 2025 Duka. Powered by M-Pesa Daraja &amp; Flask.</footer>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     PHONE ENTRY MODAL
+════════════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="phoneModal">
+  <div class="modal-box">
+    <div class="modal-title" id="phoneModalTitle">Complete Purchase</div>
+    <p class="modal-sub" id="phoneModalSub">Enter your Safaricom number to receive the payment prompt.</p>
+    <div class="phone-form">
+      <label for="phoneInput">M-Pesa Phone Number</label>
+      <input type="tel" id="phoneInput" placeholder="07XXXXXXXX or 2547XXXXXXXX" maxlength="13"/>
+      <div class="form-error" id="formError">Please enter a valid Kenyan phone number.</div>
+      <button class="btn-pay" id="btnPay" onclick="submitCheckout()">Pay with M-Pesa</button>
+    </div>
+    <button class="modal-close" onclick="closeAll()">Cancel</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     LOADING / PENDING MODAL
+════════════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="loadingModal">
+  <div class="modal-box">
+    <div class="modal-spinner"></div>
+    <div class="modal-title">Check Your Phone</div>
+    <p class="modal-sub">An M-Pesa STK push has been sent to your phone.<br>Enter your <strong>PIN</strong> to complete the payment.</p>
+    <p class="modal-sub" style="margin-top:.75rem; color:var(--accent); font-size:.8rem" id="pollingMsg">Verifying payment…</p>
+    <button class="modal-close" onclick="closeAll()">Cancel</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SUCCESS MODAL
+════════════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal-box">
+    <span class="success-icon">✅</span>
+    <div class="modal-title">Payment Confirmed!</div>
+    <p class="modal-sub">Your order has been received. Thank you for shopping with Duka.</p>
+    <div class="receipt-code" id="receiptCode">—</div>
+    <br/>
+    <button class="modal-close" onclick="closeAll()" style="margin-top:1rem; border-color:var(--accent); color:var(--accent)">Continue Shopping</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     VANILLA JS CHECKOUT FLOW
+════════════════════════════════════════════════════════════════════ -->
+<script>
+  let _currentProduct = { id: '', title: '', amount: 0 };
+  let _pollingInterval = null;
+  let _checkoutId = null;
+  let _pollCount  = 0;
+  const MAX_POLLS = 60;   // 3 min at 3s interval
+
+  function openCheckout(productId, title, amount) {
+    _currentProduct = { id: productId, title, amount };
+    document.getElementById('phoneModalTitle').textContent = `Buy: ${title}`;
+    document.getElementById('phoneModalSub').textContent =
+      `KES ${amount.toLocaleString()} — Enter your Safaricom number to pay.`;
+    document.getElementById('phoneInput').value = '';
+    document.getElementById('formError').style.display = 'none';
+    document.getElementById('btnPay').disabled = false;
+    document.getElementById('btnPay').textContent = `Pay with M-Pesa`;
+    showModal('phoneModal');
+  }
+
+  function showModal(id) {
+    ['phoneModal','loadingModal','successModal'].forEach(m => {
+      document.getElementById(m).classList.remove('active');
+    });
+    if (id) document.getElementById(id).classList.add('active');
+  }
+
+  function closeAll() {
+    showModal(null);
+    clearPolling();
+  }
+
+  function clearPolling() {
+    if (_pollingInterval) { clearInterval(_pollingInterval); _pollingInterval = null; }
+  }
+
+  async function submitCheckout() {
+    const phone = document.getElementById('phoneInput').value.trim();
+    if (!isValidPhone(phone)) {
+      document.getElementById('formError').style.display = 'block';
+      return;
+    }
+    document.getElementById('formError').style.display = 'none';
+    const btn = document.getElementById('btnPay');
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+
+    try {
+      const resp = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          phone:       phone,
+          product_id:  _currentProduct.id,
+          amount:      _currentProduct.amount,
+          description: _currentProduct.title.substring(0, 50),
+        }),
+      });
+      const data = await resp.json();
+
+      if (!resp.ok || !data.success) {
+        alert('⚠ ' + (data.error || 'Payment initiation failed. Please try again.'));
+        btn.disabled = false;
+        btn.textContent = 'Pay with M-Pesa';
+        return;
+      }
+
+      _checkoutId = data.checkout_id;
+      _pollCount  = 0;
+      showModal('loadingModal');
+      startPolling();
+
+    } catch (err) {
+      alert('Network error. Check your connection and try again.');
+      btn.disabled = false;
+      btn.textContent = 'Pay with M-Pesa';
+    }
+  }
+
+  function startPolling() {
+    clearPolling();
+    _pollingInterval = setInterval(async () => {
+      _pollCount++;
+      if (_pollCount > MAX_POLLS) {
+        clearPolling();
+        document.getElementById('pollingMsg').textContent =
+          'Timed out. If you paid, your order is being confirmed.';
+        return;
+      }
+      document.getElementById('pollingMsg').textContent =
+        `Checking status… (${_pollCount}/${MAX_POLLS})`;
+
+      try {
+        const r    = await fetch(`/api/checkout/status/${_checkoutId}`);
+        const data = await r.json();
+
+        if (data.status === 'Paid') {
+          clearPolling();
+          document.getElementById('receiptCode').textContent =
+            data.mpesa_receipt ? `Receipt: ${data.mpesa_receipt}` : 'Payment received ✓';
+          showModal('successModal');
+        } else if (data.status === 'Failed') {
+          clearPolling();
+          closeAll();
+          alert('❌ Payment was cancelled or failed. Please try again.');
+        }
+        // 'Pending' → keep polling
+      } catch (e) {
+        // silent network hiccup — keep polling
+      }
+    }, 3000);
+  }
+
+  function isValidPhone(p) {
+    const clean = p.replace(/\s/g, '');
+    return /^(07\d{8}|2547\d{8}|\+2547\d{8})$/.test(clean);
+  }
+</script>
+</body>
+</html>
